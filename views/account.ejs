@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= user.username %> | Pokebuilder</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <h1><%= user.username %></h1>
+
+    <% teams.forEach(team => { %>
+        <section class="build">
+            <div class="build-head">
+                <h2><%= team.TeamName %></h2>
+                <span><%= new Date(team.DateCreated).toLocaleDateString() %></span>
+            </div>
+
+            <div class="team-row">
+                <% for (let slot = 1; slot <= 6; slot++) {
+                     const mon = team.pokemon.find(p => p.Slot === slot); %>
+                    <% if (mon) { %>
+                        <div class="mon-card">
+                            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/<%= mon.Pokemonid %>.png" alt="<%= mon.Name %>">
+                            <strong><%= mon.Name %></strong>
+                            <div><%= mon.Type %> <%= mon.SecType || '' %></div>
+                            <div class="moves">
+                                <p><%= mon.Move1 %></p>
+                                <p><%= mon.Move2 %></p>
+                                <p><%= mon.Move3 %></p>
+                                <p><%= mon.Move4 %></p>
+                            </div>
+                            <div>Item: <%= mon.Item || 'None' %></div>
+                        </div>
+                    <% } else { %>
+                        <div class="mon-card empty">Empty slot</div>
+                    <% } %>
+                <% } %>
+            </div>
+
+            <% if (isOwner) { %>
+                <a href="/teambuilder/<%= team.TeamID %>">Edit</a>
+                <form method="post" action="/teams/<%= team.TeamID %>/rename">
+                    <input name="teamName" maxlength="32" required>
+                    <button>Rename</button>
+                </form>
+                <form method="post" action="/teams/<%= team.TeamID %>/delete"
+                      onsubmit="return confirm('Delete this build?')">
+                    <button>Delete</button>
+                </form>
+            <% } %>
+        </section>
+    <% }) %>
+
+    <% if (isOwner) { %>
+        <form method="post" action="/teams/new" class="new-build">
+            <input name="teamName" maxlength="32" placeholder="Team name" required>
+            <button>Create New Build</button>
+        </form>
+    <% } %>
+</body>
+</html>
