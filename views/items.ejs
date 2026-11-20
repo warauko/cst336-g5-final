@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Items | Pokebuilder</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="items-head">
+        <h1><%= teamId ? 'Choose Item For Slot ' + slot : 'Items' %></h1>
+        <% if (teamId) { %><a href="/teambuilder/<%= teamId %>">Back</a><% } %>
+    </div>
+
+    <form method="get" action="/items">
+        <input name="search" value="<%= search %>" placeholder="Search items">
+        <% if (teamId) { %>
+            <input type="hidden" name="teamId" value="<%= teamId %>">
+            <input type="hidden" name="slot" value="<%= slot %>">
+        <% } %>
+        <button>Search</button>
+    </form>
+
+    <div class="item-grid">
+        <% items.forEach(item => { %>
+            <div class="item-card">
+                <img src="<%= item.img %>" alt="">
+                <strong><%= item.name %></strong>
+                <p><%= item.desc %></p>
+                <% if (teamId) { %>
+                    <form method="post" action="/items/select">
+                        <input type="hidden" name="teamId" value="<%= teamId %>">
+                        <input type="hidden" name="slot" value="<%= slot %>">
+                        <input type="hidden" name="itemId" value="<%= item.id %>">
+                        <button>Choose</button>
+                    </form>
+                <% } %>
+            </div>
+        <% }) %>
+    </div>
+
+    <div class="pager">
+        <% if (page > 1) { %><a href="?page=<%= page - 1 %>&search=<%= search %>">Prev</a><% } %>
+        Page <%= page %> of <%= pages %>
+        <% if (page < pages) { %><a href="?page=<%= page + 1 %>&search=<%= search %>">Next</a><% } %>
+    </div>
+</body>
+</html>
